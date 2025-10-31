@@ -5,7 +5,7 @@ services:
     build:
         context: .
         dockerfile: Dockerfile.nginx
-    image: nginx-worker:latest
+    image: danel592/dtse-test-task:nginx-worker
     ports: ["8080:8080"]
     networks:
       - back-tier
@@ -15,7 +15,7 @@ services:
       context: .
       dockerfile: Dockerfile.api
     env_file: ./env/.env
-    image: model-api:latest
+    image: danel592/dtse-test-task:api
     ports: ["8000:8000"]
     expose: ["8000"]
     networks:
