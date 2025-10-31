@@ -1,0 +1,26 @@
+services:
+  nginx:
+    depends_on:
+      - api
+    build:
+        context: .
+        dockerfile: Dockerfile.nginx
+    image: nginx-worker:latest
+    ports: ["8080:8080"]
+    networks:
+      - back-tier
+  
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    env_file: ./env/.env
+    image: model-api:latest
+    ports: ["8000:8000"]
+    expose: ["8000"]
+    networks:
+      - back-tier
+    
+
+networks:
+  back-tier:

@@ -1,0 +1,20 @@
+# Set up base image for test and prod
+FROM python:3.9-slim AS base
+WORKDIR /app
+COPY ./requirements.txt .
+# Install given requirements as is, use additional packages
+RUN pip install -U pip && pip install -r requirements.txt
+RUN pip install PyJWT fastapi uvicorn python-dotenv pytest httpx
+COPY ./app /app
+ENV PYTHONPATH=/app
+
+# Test
+FROM base AS test
+COPY ./backend_test.py .
+RUN pytest backend_test.py && touch /tests-passed
+
+# Deploy
+FROM base AS prod
+COPY --from=test /tests-passed /tests-passed
+EXPOSE 8000
+CMD ["uvicorn", "backend:app", "--host", "0.0.0.0", "--port", "8000"]
